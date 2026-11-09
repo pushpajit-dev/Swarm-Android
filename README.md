@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://i.imgur.com/5xWYbhP.png">
-    <img src="https://i.imgur.com/5xWYbhP.png" alt="Swarm Mobile Thumbnail" width="800" style="max-width:100%; border-radius:12px;"/>
+    <img src="https://i.imgur.com/5xWYbhP.png" alt="Swarm Mobile Thumbnail" width="400" style="max-width:100%; border-radius:12px;"/>
   </a>
 </p>
 
@@ -21,7 +21,7 @@
 ## 📽️ Demo Video
 
 <div align="center">
-  <video src="https://i.imgur.com/fp7r7aE.mp4" controls muted loop playsinline width="100%"></video>
+  <img src="https://i.imgur.com/zATJAMX.gif" alt="v-ezgif.com-video-to-gif-converter"></img>
 </div>
 
 ---
@@ -44,7 +44,6 @@
   <a href="https://i.imgur.com/8ngrqOJ.jpeg"><img src="https://i.imgur.com/8ngrqOJ.jpeg" width="18%" alt="Screenshot 2"/></a>
   <a href="https://i.imgur.com/FaT8Im8.jpeg"><img src="https://i.imgur.com/FaT8Im8.jpeg" width="18%" alt="Screenshot 3"/></a>
   <a href="https://i.imgur.com/L4xEFDJ.jpeg"><img src="https://i.imgur.com/L4xEFDJ.jpeg" width="18%" alt="Screenshot 4"/></a>
-  <a href="https://i.imgur.com/5xWYbhP.png"><img src="https://i.imgur.com/5xWYbhP.png" width="18%" alt="Screenshot 5"/></a>
 </p>
 
 ---
