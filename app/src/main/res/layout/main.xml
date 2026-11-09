@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#0D1117"
+    android:fitsSystemWindows="true">
+
+    <!-- Top Search / Navigation Bar (Capsule Glass Bar) -->
+    <LinearLayout
+        android:id="@+id/bottom_glass_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/m3_glass_bar_bg"
+        android:paddingLeft="10dp"
+        android:paddingRight="8dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
+
+        <EditText
+            android:id="@+id/edittext_url"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/m3_input_bg"
+            android:hint="Enter web address..."
+            android:textColorHint="#8A99AD"
+            android:text="https://aivorygen.netlify.app"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:singleLine="true"
+            android:imeOptions="actionGo"
+            android:inputType="textUri"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp" />
+
+        <ImageView
+            android:id="@+id/btn_go"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginRight="4dp"
+            android:background="@drawable/m3_btn_icon"
+            android:src="@drawable/ic_search"
+            android:scaleType="centerInside"
+            android:contentDescription="Go"
+            android:padding="7dp" />
+
+        <ImageView
+            android:id="@+id/btn_reload"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginRight="6dp"
+            android:background="@drawable/m3_btn_icon"
+            android:src="@drawable/ic_reload"
+            android:scaleType="centerInside"
+            android:contentDescription="Reload"
+            android:padding="7dp" />
+
+        <LinearLayout
+            android:id="@+id/btn_live"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/m3_btn_live"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp">
+
+            <TextView
+                android:id="@+id/txt_live"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Live"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Center Web Container (100% Non-Overlapping Viewport) -->
+    <LinearLayout
+        android:id="@+id/linear_web"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#0D1117"
+        android:orientation="vertical">
+
+        <WebView
+            android:id="@+id/webview1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#0D1117" />
+    </LinearLayout>
+
+    <!-- Bottom Controls Dock (Material 3 Capsule Dock) -->
+    <HorizontalScrollView
+        android:id="@+id/top_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/m3_top_bar_bg"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/top_panel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp">
+
+            <!-- Agents Badge -->
+            <LinearLayout
+                android:id="@+id/badge_agents"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/m3_badge_bg"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="12dp">
+
+                <ImageView
+                    android:id="@+id/img_agents"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_agents"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/txt_agents"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="0"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Layers Badge -->
+            <LinearLayout
+                android:id="@+id/badge_layers"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/m3_badge_bg"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="12dp">
+
+                <ImageView
+                    android:id="@+id/img_layers"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_layers"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/txt_layers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="0/0"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Divider -->
+            <LinearLayout
+                android:id="@+id/sep1"
+                android:layout_width="1dp"
+                android:layout_height="22dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="8dp"
+                android:background="#33FFFFFF" />
+
+            <!-- Run Button -->
+            <LinearLayout
+                android:id="@+id/btn_run"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/m3_btn_item"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="12dp"
+                android:paddingRight="14dp">
+
+                <ImageView
+                    android:id="@+id/img_run"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_run"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/txt_run"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="Run"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Replay Button -->
+            <LinearLayout
+                android:id="@+id/btn_replay"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/m3_btn_item"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="12dp"
+                android:paddingRight="14dp">
+
+                <ImageView
+                    android:id="@+id/img_replay"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_replay"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/txt_replay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="Replay"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Tour Button -->
+            <LinearLayout
+                android:id="@+id/btn_tour"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/m3_btn_item"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="12dp"
+                android:paddingRight="14dp">
+
+                <ImageView
+                    android:id="@+id/img_tour"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_tour"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/txt_tour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="Tour"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Speed Button -->
+            <LinearLayout
+                android:id="@+id/btn_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/m3_btn_item"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="12dp"
+                android:paddingRight="14dp">
+
+                <ImageView
+                    android:id="@+id/img_speed"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_speed"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/txt_speed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="1x"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Sound Button -->
+            <LinearLayout
+                android:id="@+id/btn_sound"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/m3_btn_item"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="12dp"
+                android:paddingRight="14dp">
+
+                <ImageView
+                    android:id="@+id/img_sound"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_unmute"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/txt_sound"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="Sound"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Rotate Button -->
+            <LinearLayout
+                android:id="@+id/btn_rotate"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/m3_btn_item"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="12dp"
+                android:paddingRight="14dp">
+
+                <ImageView
+                    android:id="@+id/img_rotate"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_rotate"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/txt_rotate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="Rotate"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Record Button -->
+            <LinearLayout
+                android:id="@+id/btn_record"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/m3_btn_item"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingLeft="12dp"
+                android:paddingRight="14dp">
+
+                <ImageView
+                    android:id="@+id/img_record"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_record"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/txt_record"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:text="Record"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Fullscreen Button -->
+            <LinearLayout
+                android:id="@+id/btn_fullscreen"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginRight="2dp"
+                android:background="@drawable/m3_btn_item"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <ImageView
+                    android:id="@+id/img_fullscreen"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_fullscreen"
+                    android:scaleType="centerInside" />
+            </LinearLayout>
+        </LinearLayout>
+    </HorizontalScrollView>
+</LinearLayout>

@@ -79,7 +79,108 @@ public class MainActivity extends Activity {
             );
         } catch(Throwable t) {}
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        initializeViews();
         initializeLogic();
+    }
+
+    private void initializeViews() {
+        root_layout = findViewById(R.id.root_layout);
+        bottom_glass_bar = findViewById(R.id.bottom_glass_bar);
+        edittext_url = findViewById(R.id.edittext_url);
+        btn_go = findViewById(R.id.btn_go);
+        btn_reload = findViewById(R.id.btn_reload);
+        btn_live = findViewById(R.id.btn_live);
+        txt_live = findViewById(R.id.txt_live);
+
+        linear_web = findViewById(R.id.linear_web);
+        webview1 = findViewById(R.id.webview1);
+
+        top_scroll = findViewById(R.id.top_scroll);
+        top_panel = findViewById(R.id.top_panel);
+        badge_agents = findViewById(R.id.badge_agents);
+        img_agents = findViewById(R.id.img_agents);
+        txt_agents = findViewById(R.id.txt_agents);
+        badge_layers = findViewById(R.id.badge_layers);
+        img_layers = findViewById(R.id.img_layers);
+        txt_layers = findViewById(R.id.txt_layers);
+        sep1 = findViewById(R.id.sep1);
+
+        btn_run = findViewById(R.id.btn_run);
+        img_run = findViewById(R.id.img_run);
+        txt_run = findViewById(R.id.txt_run);
+
+        btn_replay = findViewById(R.id.btn_replay);
+        img_replay = findViewById(R.id.img_replay);
+        txt_replay = findViewById(R.id.txt_replay);
+
+        btn_tour = findViewById(R.id.btn_tour);
+        img_tour = findViewById(R.id.img_tour);
+        txt_tour = findViewById(R.id.txt_tour);
+
+        btn_speed = findViewById(R.id.btn_speed);
+        img_speed = findViewById(R.id.img_speed);
+        txt_speed = findViewById(R.id.txt_speed);
+
+        btn_sound = findViewById(R.id.btn_sound);
+        img_sound = findViewById(R.id.img_sound);
+        txt_sound = findViewById(R.id.txt_sound);
+
+        btn_rotate = findViewById(R.id.btn_rotate);
+        img_rotate = findViewById(R.id.img_rotate);
+        txt_rotate = findViewById(R.id.txt_rotate);
+
+        btn_record = findViewById(R.id.btn_record);
+        img_record = findViewById(R.id.img_record);
+        txt_record = findViewById(R.id.txt_record);
+
+        btn_fullscreen = findViewById(R.id.btn_fullscreen);
+        img_fullscreen = findViewById(R.id.img_fullscreen);
+
+        btn_run.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) { _click_run(); }
+        });
+        btn_replay.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) { _click_replay(); }
+        });
+        btn_tour.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) { _click_tour(); }
+        });
+        btn_speed.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) { _click_speed(); }
+        });
+        btn_sound.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) { _click_sound(); }
+        });
+        btn_rotate.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) { _click_rotate(); }
+        });
+        btn_record.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) { _click_record(); }
+        });
+        btn_fullscreen.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) { _click_fullscreen(); }
+        });
+        btn_go.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) { _click_go(); }
+        });
+        btn_reload.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) { _click_reload(); }
+        });
+        btn_live.setOnClickListener(new android.view.View.OnClickListener() {
+            @Override
+            public void onClick(android.view.View v) { _click_live(); }
+        });
     }
 
     private void initializeLogic() {
@@ -160,7 +261,7 @@ try {
     btn_live.setBackgroundResource(R.drawable.m3_btn_live);
 } catch(Throwable t) {}
 
-// Enforce layout gravity and margins: Support both LinearLayout and FrameLayout root hierarchies without any overlap!
+// Enforce layout gravity and margins: Non-overlapping vertical hierarchy
 try {
     final float density = getResources().getDisplayMetrics().density;
     if (root_layout instanceof android.widget.LinearLayout) {
@@ -168,7 +269,7 @@ try {
 
         android.widget.LinearLayout.LayoutParams lpTop = new android.widget.LinearLayout.LayoutParams(
             android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
-            (int) (52 * density)
+            (int) (50 * density)
         );
         lpTop.setMargins((int) (12 * density), (int) (6 * density), (int) (12 * density), (int) (4 * density));
         bottom_glass_bar.setLayoutParams(lpTop);
@@ -185,36 +286,7 @@ try {
             android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
             (int) (52 * density)
         );
-        lpBottom.setMargins((int) (12 * density), (int) (4 * density), (int) (12 * density), (int) (10 * density));
-        top_scroll.setLayoutParams(lpBottom);
-    } else {
-        // FrameLayout root fallback: calculate insets cleanly
-        android.widget.FrameLayout.LayoutParams lpTop = new android.widget.FrameLayout.LayoutParams(
-            android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
-            (int) (52 * density)
-        );
-        lpTop.gravity = android.view.Gravity.TOP;
-        lpTop.topMargin = (int) (6 * density);
-        lpTop.leftMargin = (int) (12 * density);
-        lpTop.rightMargin = (int) (12 * density);
-        bottom_glass_bar.setLayoutParams(lpTop);
-
-        android.widget.FrameLayout.LayoutParams lpWeb = new android.widget.FrameLayout.LayoutParams(
-            android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
-            android.widget.FrameLayout.LayoutParams.MATCH_PARENT
-        );
-        lpWeb.topMargin = (int) (60 * density);
-        lpWeb.bottomMargin = (int) (66 * density);
-        linear_web.setLayoutParams(lpWeb);
-
-        android.widget.FrameLayout.LayoutParams lpBottom = new android.widget.FrameLayout.LayoutParams(
-            android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
-            (int) (52 * density)
-        );
-        lpBottom.gravity = android.view.Gravity.BOTTOM;
-        lpBottom.bottomMargin = (int) (10 * density);
-        lpBottom.leftMargin = (int) (12 * density);
-        lpBottom.rightMargin = (int) (12 * density);
+        lpBottom.setMargins((int) (14 * density), (int) (4 * density), (int) (14 * density), (int) (8 * density));
         top_scroll.setLayoutParams(lpBottom);
     }
 } catch(Throwable t) {}
@@ -250,14 +322,15 @@ try {
     pulseAnim.start();
 } catch(Throwable t) {}
 
-// Enable Cookies, Third-Party Cookies & Hardware Acceleration for YouTube / Google
+// Enable Cookies, Third-Party Cookies & Smooth Rendering for YouTube / Google
 try {
     android.webkit.CookieManager cm = android.webkit.CookieManager.getInstance();
     cm.setAcceptCookie(true);
     if (android.os.Build.VERSION.SDK_INT >= 21) {
         cm.setAcceptThirdPartyCookies(webview1, true);
     }
-    webview1.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
+    webview1.setLayerType(android.view.View.LAYER_TYPE_NONE, null);
+    webview1.setOverScrollMode(android.view.View.OVER_SCROLL_IF_CONTENT_SCROLLS);
 } catch(Throwable t) {}
 
 // Touch listener for smooth scrolling and clean interactions
@@ -281,7 +354,7 @@ try {
     });
 } catch(Throwable t) {}
 
-// Configure Android WebView for maximum performance & DOM compatibility
+// Configure Android WebView for smooth 60fps scrolling & zero glitching
 try {
     android.webkit.WebSettings ws = webview1.getSettings();
     ws.setJavaScriptEnabled(true);
@@ -289,17 +362,18 @@ try {
     ws.setDatabaseEnabled(true);
     ws.setAllowFileAccess(true);
     ws.setAllowContentAccess(true);
-    ws.setLoadWithOverviewMode(true);
     ws.setUseWideViewPort(true);
-    ws.setBuiltInZoomControls(true);
+    ws.setLoadWithOverviewMode(false); // CRITICAL: false prevents overview scaling oscillation on Google/YouTube
+    ws.setBuiltInZoomControls(false); // CRITICAL: disables zoom gestures that conflict with vertical scroll
     ws.setDisplayZoomControls(false);
+    ws.setSupportZoom(false); // Eliminates pinch-zoom stutter while scrolling
     ws.setMediaPlaybackRequiresUserGesture(false);
     ws.setJavaScriptCanOpenWindowsAutomatically(true);
     ws.setSupportMultipleWindows(false);
     if (android.os.Build.VERSION.SDK_INT >= 21) {
         ws.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
     }
-    // Standard Chrome Mobile User-Agent without WebView restrictions (no '; wv', no 'Version/4.0')
+    // Standard Chrome Mobile User-Agent
     ws.setUserAgentString("Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36");
 } catch(Throwable t) {}
 
@@ -1195,22 +1269,6 @@ if (!isRecording) {
         int vis = isControlsVisible ? android.view.View.VISIBLE : android.view.View.GONE;
         bottom_glass_bar.setVisibility(vis);
         top_scroll.setVisibility(vis);
-
-        if (!(root_layout instanceof android.widget.LinearLayout)) {
-            float density = getResources().getDisplayMetrics().density;
-            android.view.ViewGroup.LayoutParams lp = linear_web.getLayoutParams();
-            if (lp instanceof android.widget.FrameLayout.LayoutParams) {
-                android.widget.FrameLayout.LayoutParams lpWeb = (android.widget.FrameLayout.LayoutParams) lp;
-                if (isControlsVisible) {
-                    lpWeb.topMargin = (int) (60 * density);
-                    lpWeb.bottomMargin = (int) (66 * density);
-                } else {
-                    lpWeb.topMargin = 0;
-                    lpWeb.bottomMargin = 0;
-                }
-                linear_web.setLayoutParams(lpWeb);
-            }
-        }
         if (!isControlsVisible) {
             android.widget.Toast.makeText(MainActivity.this, "Fullscreen: Tap web or press Back to restore", android.widget.Toast.LENGTH_SHORT).show();
         }

@@ -367,37 +367,34 @@ try {
     btn_live.setBackgroundResource(R.drawable.m3_btn_live);
 } catch(Throwable t) {}
 
-// Enforce layout gravity and margins: Inset webview container so YouTube/Google header and bottom tabs are 100% visible!
+// Enforce layout gravity and margins: Non-overlapping vertical hierarchy
 try {
-    float density = getResources().getDisplayMetrics().density;
-    android.widget.FrameLayout.LayoutParams lpTop = new android.widget.FrameLayout.LayoutParams(
-        android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
-        (int) (52 * density)
-    );
-    lpTop.gravity = android.view.Gravity.TOP;
-    lpTop.topMargin = (int) (6 * density);
-    lpTop.leftMargin = (int) (12 * density);
-    lpTop.rightMargin = (int) (12 * density);
-    bottom_glass_bar.setLayoutParams(lpTop);
+    final float density = getResources().getDisplayMetrics().density;
+    if (root_layout instanceof android.widget.LinearLayout) {
+        ((android.widget.LinearLayout) root_layout).setOrientation(android.widget.LinearLayout.VERTICAL);
 
-    // Inset webview container so that it starts cleanly BELOW top bar and ends cleanly ABOVE bottom dock!
-    android.widget.FrameLayout.LayoutParams lpWeb = new android.widget.FrameLayout.LayoutParams(
-        android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
-        android.widget.FrameLayout.LayoutParams.MATCH_PARENT
-    );
-    lpWeb.topMargin = (int) (62 * density);
-    lpWeb.bottomMargin = (int) (68 * density);
-    linear_web.setLayoutParams(lpWeb);
+        android.widget.LinearLayout.LayoutParams lpTop = new android.widget.LinearLayout.LayoutParams(
+            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+            (int) (50 * density)
+        );
+        lpTop.setMargins((int) (12 * density), (int) (6 * density), (int) (12 * density), (int) (4 * density));
+        bottom_glass_bar.setLayoutParams(lpTop);
 
-    android.widget.FrameLayout.LayoutParams lpBottom = new android.widget.FrameLayout.LayoutParams(
-        android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
-        (int) (52 * density)
-    );
-    lpBottom.gravity = android.view.Gravity.BOTTOM;
-    lpBottom.bottomMargin = (int) (10 * density);
-    lpBottom.leftMargin = (int) (12 * density);
-    lpBottom.rightMargin = (int) (12 * density);
-    top_scroll.setLayoutParams(lpBottom);
+        android.widget.LinearLayout.LayoutParams lpWeb = new android.widget.LinearLayout.LayoutParams(
+            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+            0,
+            1.0f
+        );
+        lpWeb.setMargins(0, 0, 0, 0);
+        linear_web.setLayoutParams(lpWeb);
+
+        android.widget.LinearLayout.LayoutParams lpBottom = new android.widget.LinearLayout.LayoutParams(
+            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+            (int) (52 * density)
+        );
+        lpBottom.setMargins((int) (14 * density), (int) (4 * density), (int) (14 * density), (int) (8 * density));
+        top_scroll.setLayoutParams(lpBottom);
+    }
 } catch(Throwable t) {}
 
 // Enforce layout ordering programmatically
@@ -431,17 +428,18 @@ try {
     pulseAnim.start();
 } catch(Throwable t) {}
 
-// Enable Cookies, Third-Party Cookies & Hardware Acceleration for YouTube / Google
+// Enable Cookies, Third-Party Cookies & Smooth Rendering for YouTube / Google
 try {
     android.webkit.CookieManager cm = android.webkit.CookieManager.getInstance();
     cm.setAcceptCookie(true);
     if (android.os.Build.VERSION.SDK_INT >= 21) {
         cm.setAcceptThirdPartyCookies(webview1, true);
     }
-    webview1.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
+    webview1.setLayerType(android.view.View.LAYER_TYPE_NONE, null);
+    webview1.setOverScrollMode(android.view.View.OVER_SCROLL_IF_CONTENT_SCROLLS);
 } catch(Throwable t) {}
 
-// Configure Android WebView for maximum performance & DOM compatibility
+// Configure Android WebView for smooth 60fps scrolling & zero glitching
 try {
     android.webkit.WebSettings ws = webview1.getSettings();
     ws.setJavaScriptEnabled(true);
@@ -449,17 +447,18 @@ try {
     ws.setDatabaseEnabled(true);
     ws.setAllowFileAccess(true);
     ws.setAllowContentAccess(true);
-    ws.setLoadWithOverviewMode(true);
     ws.setUseWideViewPort(true);
-    ws.setBuiltInZoomControls(true);
+    ws.setLoadWithOverviewMode(false); // CRITICAL: false eliminates scroll glitching on Google & YouTube
+    ws.setBuiltInZoomControls(false); // CRITICAL: disables zoom gestures that conflict with vertical scroll
     ws.setDisplayZoomControls(false);
+    ws.setSupportZoom(false); // Eliminates pinch-zoom stutter while scrolling
     ws.setMediaPlaybackRequiresUserGesture(false);
     ws.setJavaScriptCanOpenWindowsAutomatically(true);
     ws.setSupportMultipleWindows(false);
     if (android.os.Build.VERSION.SDK_INT >= 21) {
         ws.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
     }
-    // Standard Chrome Mobile User-Agent without WebView restrictions (no '; wv', no 'Version/4.0')
+    // Standard Chrome Mobile User-Agent
     ws.setUserAgentString("Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36");
 } catch(Throwable t) {}
 
