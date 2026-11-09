@@ -18,20 +18,6 @@
 
 ---
 
-## 📽️ Live Demo
-
-<p align="center">
-  <a href="https://github.com/pushpajit-dev/Swarm-Android/releases/latest">
-    <img src="https://i.imgur.com/zATJAMX.gif" alt="Swarm Mobile Live Demo" width="100%" style="max-width:720px; border-radius:14px; box-shadow: 0 8px 30px rgba(0,0,0,0.35);"/>
-  </a>
-</p>
-
-<p align="center">
-  <i>⚡ Full-speed live preview — Autonomous visual agents dissecting and rebuilding live DOM structures.</i>
-</p>
-
----
-
 ## ✨ Features
 
 - **⚡ Client-Side Autonomous Agent Swarm:** Dissects and rebuilds live webpage DOM hierarchies from scratch in real-time using parallelized visual agents.
