@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/pushpajit-dev/Swarm-Android">
-    <img src="https://i.imgur.com/5xWYbhP.png" alt="Swarm Mobile Thumbnail" width="400" style="max-width:100%; border-radius:12px;"/>
+    <img src="https://i.imgur.com/ITD4MHm.png" alt="Swarm Mobile Thumbnail" width="200" style="max-width:100%; border-radius:12px;"/>
   </a>
 </p>
 
@@ -32,10 +32,13 @@
 ## 📸 Screenshots
 
 <p align="center">
+  <a href="https://i.imgur.com/wbZvGgF.png"><img src="https://i.imgur.com/wbZvGgF.png" width="18%" alt="Screenshot 0"/></a>
   <a href="https://i.imgur.com/C0ML9df.jpeg"><img src="https://i.imgur.com/C0ML9df.jpeg" width="18%" alt="Screenshot 1"/></a>
   <a href="https://i.imgur.com/8ngrqOJ.jpeg"><img src="https://i.imgur.com/8ngrqOJ.jpeg" width="18%" alt="Screenshot 2"/></a>
   <a href="https://i.imgur.com/FaT8Im8.jpeg"><img src="https://i.imgur.com/FaT8Im8.jpeg" width="18%" alt="Screenshot 3"/></a>
   <a href="https://i.imgur.com/L4xEFDJ.jpeg"><img src="https://i.imgur.com/L4xEFDJ.jpeg" width="18%" alt="Screenshot 4"/></a>
+  
+ 
 </p>
 
 ---
