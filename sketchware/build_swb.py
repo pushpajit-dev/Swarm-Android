@@ -166,17 +166,13 @@ def build_project():
     # - Layer 2 (Bottom Floating): top_scroll (Controls Bar, layoutGravity=BOTTOM 80, bottom margin 24dp, bg=-14738652)
     # Generous spacing, distinct badge separation, and explicit dark theme colors for 100% Sketchware visual preview!
     widgets = [
-        # Root FrameLayout
-        make_widget("root_layout", 0, "root", "FrameLayout", width=-1, height=-1, bg_color=-15723748, index=0),
+        # Root LinearLayout (VERTICAL, non-overlapping clean architecture)
+        make_widget("root_layout", 0, "root", "LinearLayout", orientation=1, width=-1, height=-1, bg_color=-15723748, index=0),
 
-        # Layer 0: Background Container with WebView taking 100% full screen
-        make_widget("linear_web", 0, "root_layout", "LinearLayout", orientation=1, width=-1, height=-1, bg_color=-15723748, index=0),
-        make_widget("webview1", 7, "linear_web", "WebView", width=-1, height=-1, bg_color=-15723748, index=0),
-
-        # Layer 1: Floating Top Search Bar (layoutGravity=48 [TOP])
+        # Child 0: Top Search Bar
         make_widget("bottom_glass_bar", 0, "root_layout", "LinearLayout", orientation=0, width=-1, height=52,
-                    layoutGravity=48, margin_t=14, margin_b=0, margin_l=12, margin_r=12,
-                    gravity=16, pad_l=10, pad_r=8, pad_t=6, pad_b=6, bg_color=-14868958, index=1),
+                    margin_t=6, margin_b=4, margin_l=12, margin_r=12,
+                    gravity=16, pad_l=10, pad_r=8, pad_t=6, pad_b=6, bg_color=-14868958, index=0),
         
         # Search Bar Children (Left to Right: URL text input -> Search button -> Reload button -> Live button):
         make_widget("edittext_url", 5, "bottom_glass_bar", "EditText", width=0, height=38, weight=1,
@@ -193,12 +189,16 @@ def build_project():
                     pad_l=14, pad_r=14, gravity=17, clickable=1, bg_color=-5036514, index=3),
         make_widget("txt_live", 4, "btn_live", "TextView", width=-2, height=-2, text="Live", text_color=-1, textSize=12, index=0),
 
-        # Layer 2: Floating Bottom Controls Bar (layoutGravity=80 [BOTTOM])
+        # Child 1: Center Container with WebView taking remaining vertical height cleanly
+        make_widget("linear_web", 0, "root_layout", "LinearLayout", orientation=1, width=-1, height=0, weight=1, bg_color=-15723748, index=1),
+        make_widget("webview1", 7, "linear_web", "WebView", width=-1, height=-1, bg_color=-15723748, index=0),
+
+        # Child 2: Bottom Controls Bar (Island dock)
         make_widget("top_scroll", 0, "root_layout", "HorizontalScrollView", width=-1, height=52,
-                    layoutGravity=80, margin_t=0, margin_b=18, margin_l=12, margin_r=12,
+                    margin_t=4, margin_b=10, margin_l=12, margin_r=12,
                     inject='android:scrollbars="none"\nandroid:overScrollMode="never"', bg_color=0, index=2),
         make_widget("top_panel", 0, "top_scroll", "LinearLayout", orientation=0, width=-2, height=48,
-                    pad_l=8, pad_r=8, gravity=17, bg_color=0, index=0),
+                    pad_l=12, pad_r=12, gravity=17, bg_color=0, index=0),
 
         # Controls Bar Children:
         # Agents Badge
@@ -333,19 +333,22 @@ try {
 
 // Apply Material 3 Frosted Glass Backgrounds & Rounded Capsule Clipping
 try {
-    // Bottom Controls Bar: Apply pill background directly to top_scroll and clip all child content to 28dp outline!
+    final float density = getResources().getDisplayMetrics().density;
+
+    // Bottom Controls Bar: Apply 26dp smooth capsule outline provider & clip to outline
     top_scroll.setBackgroundResource(R.drawable.m3_top_bar_bg);
     if (android.os.Build.VERSION.SDK_INT >= 21) {
+        top_scroll.setOutlineProvider(new CapsuleOutlineProvider(26 * density));
         top_scroll.setClipToOutline(true);
-        top_scroll.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND);
     }
     top_panel.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+    top_panel.setPadding((int) (14 * density), 0, (int) (14 * density), 0);
 
-    // Top Search Bar: Apply 28dp pill background and clip to outline
+    // Top Search Bar: Apply 26dp smooth capsule outline provider & clip to outline
     bottom_glass_bar.setBackgroundResource(R.drawable.m3_glass_bar_bg);
     if (android.os.Build.VERSION.SDK_INT >= 21) {
+        bottom_glass_bar.setOutlineProvider(new CapsuleOutlineProvider(26 * density));
         bottom_glass_bar.setClipToOutline(true);
-        bottom_glass_bar.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND);
     }
 
     badge_agents.setBackgroundResource(R.drawable.m3_badge_bg);
@@ -364,7 +367,7 @@ try {
     btn_live.setBackgroundResource(R.drawable.m3_btn_live);
 } catch(Throwable t) {}
 
-// Enforce layout gravity and margins for floating bars at runtime (symmetric 12dp margins, smooth 28dp capsules)
+// Enforce layout gravity and margins: Inset webview container so YouTube/Google header and bottom tabs are 100% visible!
 try {
     float density = getResources().getDisplayMetrics().density;
     android.widget.FrameLayout.LayoutParams lpTop = new android.widget.FrameLayout.LayoutParams(
@@ -372,17 +375,26 @@ try {
         (int) (52 * density)
     );
     lpTop.gravity = android.view.Gravity.TOP;
-    lpTop.topMargin = (int) (14 * density);
+    lpTop.topMargin = (int) (6 * density);
     lpTop.leftMargin = (int) (12 * density);
     lpTop.rightMargin = (int) (12 * density);
     bottom_glass_bar.setLayoutParams(lpTop);
+
+    // Inset webview container so that it starts cleanly BELOW top bar and ends cleanly ABOVE bottom dock!
+    android.widget.FrameLayout.LayoutParams lpWeb = new android.widget.FrameLayout.LayoutParams(
+        android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+        android.widget.FrameLayout.LayoutParams.MATCH_PARENT
+    );
+    lpWeb.topMargin = (int) (62 * density);
+    lpWeb.bottomMargin = (int) (68 * density);
+    linear_web.setLayoutParams(lpWeb);
 
     android.widget.FrameLayout.LayoutParams lpBottom = new android.widget.FrameLayout.LayoutParams(
         android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
         (int) (52 * density)
     );
     lpBottom.gravity = android.view.Gravity.BOTTOM;
-    lpBottom.bottomMargin = (int) (18 * density);
+    lpBottom.bottomMargin = (int) (10 * density);
     lpBottom.leftMargin = (int) (12 * density);
     lpBottom.rightMargin = (int) (12 * density);
     top_scroll.setLayoutParams(lpBottom);
@@ -447,10 +459,8 @@ try {
     if (android.os.Build.VERSION.SDK_INT >= 21) {
         ws.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
     }
-    String defaultUa = ws.getUserAgentString();
-    if (defaultUa != null && defaultUa.contains("; wv")) {
-        ws.setUserAgentString(defaultUa.replace("; wv", ""));
-    }
+    // Standard Chrome Mobile User-Agent without WebView restrictions (no '; wv', no 'Version/4.0')
+    ws.setUserAgentString("Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36");
 } catch(Throwable t) {}
 
 // Hardware back key handler
@@ -597,6 +607,12 @@ try {
             if (startUrl != null && !startUrl.isEmpty()) {
                 edittext_url.setText(startUrl);
             }
+            if (isTour) {
+                isTour = false;
+                txt_tour.setText("Tour");
+                btn_tour.setBackgroundResource(R.drawable.m3_btn_item);
+            }
+            view.evaluateJavascript("window.__tourActive = false; if (window.__tourRaf) cancelAnimationFrame(window.__tourRaf);", null);
         }
         @Override
         public void onPageFinished(android.webkit.WebView view, String loadedUrl) {
@@ -681,6 +697,17 @@ public android.view.View customVideoView = null;
 public android.webkit.WebChromeClient.CustomViewCallback customViewCallback = null;
 
 // Hardware-GPU High-Definition Screen Recorder Helper (720p HD, 8 Mbps, 30 FPS, Non-blocking PixelCopy, AudioRecord Muxing)
+public static class CapsuleOutlineProvider extends android.view.ViewOutlineProvider {
+    private final float radius;
+    public CapsuleOutlineProvider(float radius) {
+        this.radius = radius;
+    }
+    @Override
+    public void getOutline(android.view.View view, android.graphics.Outline outline) {
+        outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), radius);
+    }
+}
+
 public static class ScreenRecorderHelper {
     public static android.media.MediaCodec videoCodec;
     public static android.media.MediaCodec audioCodec;
@@ -896,8 +923,18 @@ if (isLandscape) {
 int vis = isControlsVisible ? android.view.View.VISIBLE : android.view.View.GONE;
 bottom_glass_bar.setVisibility(vis);
 top_scroll.setVisibility(vis);
-if (!isControlsVisible) {
-    android.widget.Toast.makeText(MainActivity.this, "Fullscreen: Tap web or press Back to restore", android.widget.Toast.LENGTH_SHORT).show();
+float density = getResources().getDisplayMetrics().density;
+android.widget.FrameLayout.LayoutParams lpWeb = (android.widget.FrameLayout.LayoutParams) linear_web.getLayoutParams();
+if (lpWeb != null) {
+    if (isControlsVisible) {
+        lpWeb.topMargin = (int) (62 * density);
+        lpWeb.bottomMargin = (int) (68 * density);
+    } else {
+        lpWeb.topMargin = 0;
+        lpWeb.bottomMargin = 0;
+        android.widget.Toast.makeText(MainActivity.this, "Fullscreen: Tap web or press Back to restore", android.widget.Toast.LENGTH_SHORT).show();
+    }
+    linear_web.setLayoutParams(lpWeb);
 }"""
 
     btn_live_code = """isRunning = false;

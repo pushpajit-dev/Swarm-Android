@@ -8,36 +8,6 @@ import android.webkit.*;
 
 public class MainActivity extends Activity {
 
-    public static class R {
-        public static final class drawable {
-            public static final int ic_agents = 1;
-            public static final int ic_layers = 2;
-            public static final int ic_run = 3;
-            public static final int ic_stop = 4;
-            public static final int ic_replay = 5;
-            public static final int ic_tour = 6;
-            public static final int ic_speed = 7;
-            public static final int ic_mute = 8;
-            public static final int ic_unmute = 9;
-            public static final int ic_rotate = 10;
-            public static final int ic_record = 11;
-            public static final int ic_reload = 12;
-            public static final int ic_fullscreen = 13;
-            public static final int ic_close = 14;
-            public static final int ic_search = 15;
-            public static final int m3_top_bar_bg = 16;
-            public static final int m3_glass_bar_bg = 17;
-            public static final int m3_badge_bg = 18;
-            public static final int m3_btn_item = 19;
-            public static final int m3_btn_item_active = 20;
-            public static final int m3_btn_record_active = 21;
-            public static final int m3_btn_icon = 22;
-            public static final int m3_btn_live = 23;
-            public static final int m3_btn_close = 24;
-            public static final int m3_input_bg = 25;
-        }
-    }
-
     private LinearLayout root_layout;
     private LinearLayout bottom_glass_bar;
     private EditText edittext_url;
@@ -102,6 +72,12 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        try {
+            getWindow().setFlags(
+                android.view.WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                android.view.WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+            );
+        } catch(Throwable t) {}
         super.onCreate(savedInstanceState);
         initializeLogic();
     }
@@ -147,19 +123,25 @@ try {
 
 // Apply Material 3 Frosted Glass Backgrounds & Rounded Capsule Clipping
 try {
-    // Bottom Controls Bar: Apply pill background directly to top_scroll and clip all child content to 28dp outline!
+    final float density = getResources().getDisplayMetrics().density;
+
+    // Bottom Controls Bar: Apply 26dp smooth capsule outline provider & clip to outline
     top_scroll.setBackgroundResource(R.drawable.m3_top_bar_bg);
     if (android.os.Build.VERSION.SDK_INT >= 21) {
+        top_scroll.setOutlineProvider(new CapsuleOutlineProvider(26 * density));
         top_scroll.setClipToOutline(true);
-        top_scroll.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND);
     }
+    top_scroll.setHorizontalScrollBarEnabled(false);
+    top_scroll.setOverScrollMode(android.view.View.OVER_SCROLL_NEVER);
+    top_scroll.post(new ScrollResetRunnable(top_scroll));
     top_panel.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+    top_panel.setPadding((int) (14 * density), 0, (int) (14 * density), 0);
 
-    // Top Search Bar: Apply 28dp pill background and clip to outline
+    // Top Search Bar: Apply 26dp smooth capsule outline provider & clip to outline
     bottom_glass_bar.setBackgroundResource(R.drawable.m3_glass_bar_bg);
     if (android.os.Build.VERSION.SDK_INT >= 21) {
+        bottom_glass_bar.setOutlineProvider(new CapsuleOutlineProvider(26 * density));
         bottom_glass_bar.setClipToOutline(true);
-        bottom_glass_bar.setOutlineProvider(android.view.ViewOutlineProvider.BACKGROUND);
     }
 
     badge_agents.setBackgroundResource(R.drawable.m3_badge_bg);
@@ -178,28 +160,63 @@ try {
     btn_live.setBackgroundResource(R.drawable.m3_btn_live);
 } catch(Throwable t) {}
 
-// Enforce layout gravity and margins for floating bars at runtime (symmetric 12dp margins, smooth 28dp capsules)
+// Enforce layout gravity and margins: Support both LinearLayout and FrameLayout root hierarchies without any overlap!
 try {
-    float density = getResources().getDisplayMetrics().density;
-    android.widget.FrameLayout.LayoutParams lpTop = new android.widget.FrameLayout.LayoutParams(
-        android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
-        (int) (52 * density)
-    );
-    lpTop.gravity = android.view.Gravity.TOP;
-    lpTop.topMargin = (int) (14 * density);
-    lpTop.leftMargin = (int) (12 * density);
-    lpTop.rightMargin = (int) (12 * density);
-    bottom_glass_bar.setLayoutParams(lpTop);
+    final float density = getResources().getDisplayMetrics().density;
+    if (root_layout instanceof android.widget.LinearLayout) {
+        ((android.widget.LinearLayout) root_layout).setOrientation(android.widget.LinearLayout.VERTICAL);
 
-    android.widget.FrameLayout.LayoutParams lpBottom = new android.widget.FrameLayout.LayoutParams(
-        android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
-        (int) (52 * density)
-    );
-    lpBottom.gravity = android.view.Gravity.BOTTOM;
-    lpBottom.bottomMargin = (int) (18 * density);
-    lpBottom.leftMargin = (int) (12 * density);
-    lpBottom.rightMargin = (int) (12 * density);
-    top_scroll.setLayoutParams(lpBottom);
+        android.widget.LinearLayout.LayoutParams lpTop = new android.widget.LinearLayout.LayoutParams(
+            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+            (int) (52 * density)
+        );
+        lpTop.setMargins((int) (12 * density), (int) (6 * density), (int) (12 * density), (int) (4 * density));
+        bottom_glass_bar.setLayoutParams(lpTop);
+
+        android.widget.LinearLayout.LayoutParams lpWeb = new android.widget.LinearLayout.LayoutParams(
+            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+            0,
+            1.0f
+        );
+        lpWeb.setMargins(0, 0, 0, 0);
+        linear_web.setLayoutParams(lpWeb);
+
+        android.widget.LinearLayout.LayoutParams lpBottom = new android.widget.LinearLayout.LayoutParams(
+            android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+            (int) (52 * density)
+        );
+        lpBottom.setMargins((int) (12 * density), (int) (4 * density), (int) (12 * density), (int) (10 * density));
+        top_scroll.setLayoutParams(lpBottom);
+    } else {
+        // FrameLayout root fallback: calculate insets cleanly
+        android.widget.FrameLayout.LayoutParams lpTop = new android.widget.FrameLayout.LayoutParams(
+            android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+            (int) (52 * density)
+        );
+        lpTop.gravity = android.view.Gravity.TOP;
+        lpTop.topMargin = (int) (6 * density);
+        lpTop.leftMargin = (int) (12 * density);
+        lpTop.rightMargin = (int) (12 * density);
+        bottom_glass_bar.setLayoutParams(lpTop);
+
+        android.widget.FrameLayout.LayoutParams lpWeb = new android.widget.FrameLayout.LayoutParams(
+            android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+            android.widget.FrameLayout.LayoutParams.MATCH_PARENT
+        );
+        lpWeb.topMargin = (int) (60 * density);
+        lpWeb.bottomMargin = (int) (66 * density);
+        linear_web.setLayoutParams(lpWeb);
+
+        android.widget.FrameLayout.LayoutParams lpBottom = new android.widget.FrameLayout.LayoutParams(
+            android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+            (int) (52 * density)
+        );
+        lpBottom.gravity = android.view.Gravity.BOTTOM;
+        lpBottom.bottomMargin = (int) (10 * density);
+        lpBottom.leftMargin = (int) (12 * density);
+        lpBottom.rightMargin = (int) (12 * density);
+        top_scroll.setLayoutParams(lpBottom);
+    }
 } catch(Throwable t) {}
 
 // Enforce layout ordering programmatically
@@ -243,6 +260,27 @@ try {
     webview1.setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null);
 } catch(Throwable t) {}
 
+// Touch listener for smooth scrolling and clean interactions
+try {
+    webview1.setOnTouchListener(new android.view.View.OnTouchListener() {
+        @Override
+        public boolean onTouch(android.view.View v, android.view.MotionEvent event) {
+            if (isRecording && event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+                v.performClick();
+                btn_record.performClick();
+                return true;
+            }
+            if (isTour && (event.getAction() == android.view.MotionEvent.ACTION_DOWN || event.getAction() == android.view.MotionEvent.ACTION_MOVE)) {
+                isTour = false;
+                txt_tour.setText("Tour");
+                btn_tour.setBackgroundResource(R.drawable.m3_btn_item);
+                webview1.evaluateJavascript("window.__tourActive = false; if (window.__tourRaf) cancelAnimationFrame(window.__tourRaf);", null);
+            }
+            return false;
+        }
+    });
+} catch(Throwable t) {}
+
 // Configure Android WebView for maximum performance & DOM compatibility
 try {
     android.webkit.WebSettings ws = webview1.getSettings();
@@ -261,10 +299,8 @@ try {
     if (android.os.Build.VERSION.SDK_INT >= 21) {
         ws.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
     }
-    String defaultUa = ws.getUserAgentString();
-    if (defaultUa != null && defaultUa.contains("; wv")) {
-        ws.setUserAgentString(defaultUa.replace("; wv", ""));
-    }
+    // Standard Chrome Mobile User-Agent without WebView restrictions (no '; wv', no 'Version/4.0')
+    ws.setUserAgentString("Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36");
 } catch(Throwable t) {}
 
 // Hardware back key handler
@@ -295,9 +331,7 @@ try {
                     webview1.goBack();
                     return true;
                 } else if (!isControlsVisible) {
-                    isControlsVisible = true;
-                    bottom_glass_bar.setVisibility(android.view.View.VISIBLE);
-                    top_scroll.setVisibility(android.view.View.VISIBLE);
+                    _click_fullscreen();
                     return true;
                 }
             }
@@ -335,10 +369,19 @@ try {
             }
             customVideoView = view;
             customViewCallback = callback;
-            root_layout.addView(customVideoView, new android.widget.FrameLayout.LayoutParams(
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
-                android.widget.FrameLayout.LayoutParams.MATCH_PARENT
-            ));
+            android.view.ViewGroup.LayoutParams lp;
+            if (root_layout instanceof android.widget.LinearLayout) {
+                lp = new android.widget.LinearLayout.LayoutParams(
+                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT
+                );
+            } else {
+                lp = new android.widget.FrameLayout.LayoutParams(
+                    android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                    android.widget.FrameLayout.LayoutParams.MATCH_PARENT
+                );
+            }
+            root_layout.addView(customVideoView, lp);
             customVideoView.setBackgroundColor(android.graphics.Color.BLACK);
             linear_web.setVisibility(android.view.View.GONE);
             bottom_glass_bar.setVisibility(android.view.View.GONE);
@@ -366,7 +409,13 @@ try {
         public boolean shouldOverrideUrlLoading(android.webkit.WebView view, String newUrl) {
             if (newUrl == null) return false;
             if (newUrl.startsWith("http://") || newUrl.startsWith("https://")) {
-                // Return false so WebView natively handles HTTP/HTTPS navigation, POST, cookies, and redirects!
+                String lower = newUrl.toLowerCase();
+                if (lower.equals("https://m.youtube.com/") || lower.equals("https://m.youtube.com") ||
+                    lower.equals("https://youtube.com/") || lower.equals("https://youtube.com") ||
+                    lower.equals("https://www.youtube.com/") || lower.equals("https://www.youtube.com")) {
+                    view.loadUrl("https://m.youtube.com/feed/trending");
+                    return true;
+                }
                 return false;
             }
             // Handle app intents (intent://, vnd.youtube:, market://, etc.)
@@ -411,6 +460,12 @@ try {
             if (startUrl != null && !startUrl.isEmpty()) {
                 edittext_url.setText(startUrl);
             }
+            if (isTour) {
+                isTour = false;
+                txt_tour.setText("Tour");
+                btn_tour.setBackgroundResource(R.drawable.m3_btn_item);
+            }
+            view.evaluateJavascript("window.__tourActive = false; if (window.__tourRaf) cancelAnimationFrame(window.__tourRaf);", null);
         }
         @Override
         public void onPageFinished(android.webkit.WebView view, String loadedUrl) {
@@ -495,6 +550,27 @@ public android.view.View customVideoView = null;
 public android.webkit.WebChromeClient.CustomViewCallback customViewCallback = null;
 
 // Hardware-GPU High-Definition Screen Recorder Helper (720p HD, 8 Mbps, 30 FPS, Non-blocking PixelCopy, AudioRecord Muxing)
+public static class ScrollResetRunnable implements Runnable {
+    private final android.widget.HorizontalScrollView scrollView;
+    public ScrollResetRunnable(android.widget.HorizontalScrollView sv) {
+        this.scrollView = sv;
+    }
+    @Override
+    public void run() {
+        try { if (scrollView != null) scrollView.scrollTo(0, 0); } catch(Throwable t) {}
+    }
+}
+public static class CapsuleOutlineProvider extends android.view.ViewOutlineProvider {
+    private final float radius;
+    public CapsuleOutlineProvider(float radius) {
+        this.radius = radius;
+    }
+    @Override
+    public void getOutline(android.view.View view, android.graphics.Outline outline) {
+        outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), radius);
+    }
+}
+
 public static class ScreenRecorderHelper {
     public static android.media.MediaCodec videoCodec;
     public static android.media.MediaCodec audioCodec;
@@ -1115,13 +1191,29 @@ if (!isRecording) {
     }
 
     public void _click_fullscreen() {
-isControlsVisible = !isControlsVisible;
-int vis = isControlsVisible ? android.view.View.VISIBLE : android.view.View.GONE;
-bottom_glass_bar.setVisibility(vis);
-top_scroll.setVisibility(vis);
-if (!isControlsVisible) {
-    android.widget.Toast.makeText(MainActivity.this, "Fullscreen: Tap web or press Back to restore", android.widget.Toast.LENGTH_SHORT).show();
-}
+        isControlsVisible = !isControlsVisible;
+        int vis = isControlsVisible ? android.view.View.VISIBLE : android.view.View.GONE;
+        bottom_glass_bar.setVisibility(vis);
+        top_scroll.setVisibility(vis);
+
+        if (!(root_layout instanceof android.widget.LinearLayout)) {
+            float density = getResources().getDisplayMetrics().density;
+            android.view.ViewGroup.LayoutParams lp = linear_web.getLayoutParams();
+            if (lp instanceof android.widget.FrameLayout.LayoutParams) {
+                android.widget.FrameLayout.LayoutParams lpWeb = (android.widget.FrameLayout.LayoutParams) lp;
+                if (isControlsVisible) {
+                    lpWeb.topMargin = (int) (60 * density);
+                    lpWeb.bottomMargin = (int) (66 * density);
+                } else {
+                    lpWeb.topMargin = 0;
+                    lpWeb.bottomMargin = 0;
+                }
+                linear_web.setLayoutParams(lpWeb);
+            }
+        }
+        if (!isControlsVisible) {
+            android.widget.Toast.makeText(MainActivity.this, "Fullscreen: Tap web or press Back to restore", android.widget.Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void _click_live() {
@@ -1173,6 +1265,14 @@ if (target.isEmpty()) {
         } else {
             target = "https://" + target;
         }
+    }
+
+    // Direct YouTube root navigation to trending feed so it is always packed with videos!
+    String lower = target.toLowerCase();
+    if (lower.equals("https://youtube.com") || lower.equals("https://youtube.com/") ||
+        lower.equals("https://m.youtube.com") || lower.equals("https://m.youtube.com/") ||
+        lower.equals("https://www.youtube.com") || lower.equals("https://www.youtube.com/")) {
+        target = "https://m.youtube.com/feed/trending";
     }
 }
 edittext_url.setText(target);
