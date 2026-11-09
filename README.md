@@ -1,7 +1,7 @@
 # Swarm Mobile (Android)
 
 <p align="center">
-  <a href="https://i.imgur.com/5xWYbhP.png">
+  <a href="https://github.com/pushpajit-dev/Swarm-Android">
     <img src="https://i.imgur.com/5xWYbhP.png" alt="Swarm Mobile Thumbnail" width="400" style="max-width:100%; border-radius:12px;"/>
   </a>
 </p>
@@ -18,11 +18,17 @@
 
 ---
 
-## 📽️ Demo Video
+## 📽️ Live Demo
 
-<div align="center">
-  <img src="https://i.imgur.com/zATJAMX.gif" alt="v-ezgif.com-video-to-gif-converter"></img>
-</div>
+<p align="center">
+  <a href="https://github.com/pushpajit-dev/Swarm-Android/releases/latest">
+    <img src="https://i.imgur.com/zATJAMX.gif" alt="Swarm Mobile Live Demo" width="100%" style="max-width:720px; border-radius:14px; box-shadow: 0 8px 30px rgba(0,0,0,0.35);"/>
+  </a>
+</p>
+
+<p align="center">
+  <i>⚡ Full-speed live preview — Autonomous visual agents dissecting and rebuilding live DOM structures.</i>
+</p>
 
 ---
 
